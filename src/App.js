@@ -1,24 +1,25 @@
+// src/App.js
 import React, { useState } from 'react';
-
-//import ClaimCheckerPage from './components/claimCheckerPage';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import HomePage from './components/HomePage';
 import ResultDisplay from './components/resultDisplayPage';
-//import LanguageSwitcher from './components/languageSwitcher';
-import './styles.css';  
-
+import './styles.css';
 
 function App() {
   const [language, setLanguage] = useState('en');
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState('');  // Result state to store the result
 
   const handleLanguageChange = (lang) => {
     setLanguage(lang);
   };
 
   return (
-    <div>
-     
-      <ResultDisplay result={result} />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage language={language} onLanguageChange={handleLanguageChange} setResult={setResult} />} />
+        <Route path="/result" element={<ResultDisplay result={result} />} />
+      </Routes>
+    </Router>
   );
 }
 

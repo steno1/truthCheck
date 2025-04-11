@@ -1,9 +1,28 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import './ResultPage.css';
 
-function ResultPage() {
+function ResultPage({ result }) {
+  const navigate = useNavigate(); 
+
   return (
     <div className="result-page">
+      {/* Back Button */}
+      <button 
+        onClick={() => navigate('/')} 
+        style={{
+          margin: '20px',
+          padding: '8px 16px',
+          backgroundColor: '#007BFF',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer'
+        }}
+      >
+        ← Back
+      </button>
+
       <h1 className="title">FactCheck Result</h1>
 
       <div className="top-loader-container">
@@ -26,7 +45,7 @@ function ResultPage() {
       </div>
 
       <div className="result-summary">
-        <h2 className="verdict">Likely True!</h2>
+        <h2 className="verdict">{result || 'No result available'}</h2>
         <p className="score">70/100</p>
       </div>
 
@@ -49,34 +68,30 @@ function ResultPage() {
       <button className="check-more-btn">Check More</button>
 
       <div className="feedback-section">
-  <h3>Was this verification helpful?</h3>
-  <div class="feedback-options">
-  <button>
-    <div class="emoji">😊</div>
-    <div class="label">Good</div>
-  </button>
-  <button>
-    <div class="emoji">😐</div>
-    <div class="label">Bad</div>
-  </button>
-  <button>
-    <div class="emoji">😕</div>
-    <div class="label">Confusing</div>
-  </button>
-  <button>
-    <div class="emoji">🌟</div>
-    <div class="label">Excellent</div>
-  </button>
-</div>
+        <h3>Was this verification helpful?</h3>
+        <div className="feedback-options">
+          <button>
+            <div className="emoji">😊</div>
+            <div className="label">Good</div>
+          </button>
+          <button>
+            <div className="emoji">😐</div>
+            <div className="label">Bad</div>
+          </button>
+          <button>
+            <div className="emoji">😕</div>
+            <div className="label">Confusing</div>
+          </button>
+          <button>
+            <div className="emoji">🌟</div>
+            <div className="label">Excellent</div>
+          </button>
+        </div>
 
-<div class="thought-box">
-  <textarea placeholder="Share your thought..." rows="3"></textarea>
-</div>
-
-</div>
-
-
-    
+        <div className="thought-box">
+          <textarea placeholder="Share your thought..." rows="3"></textarea>
+        </div>
+      </div>
     </div>
   );
 }
