@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/truthCheck/static/css/main.65159377.css",
+    "main.js": "/truthCheck/static/js/main.b07e7332.js",
+    "index.html": "/truthCheck/index.html",
+    "main.65159377.css.map": "/truthCheck/static/css/main.65159377.css.map",
+    "main.b07e7332.js.map": "/truthCheck/static/js/main.b07e7332.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.65159377.css",
+    "static/js/main.b07e7332.js"
+  ]
+}
