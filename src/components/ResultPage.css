@@ -224,6 +224,26 @@
         flex-direction: column;
         align-items: center;
     }
+    .feedback-options {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+      }
+    
+      .feedback-options button {
+        min-width: 60px;
+        font-size: 0.75rem;
+        padding: 4px;
+      }
+    
+      .feedback-options .emoji {
+        font-size: 1rem;
+      }
+    
+      .feedback-options .label {
+        font-size: 0.65rem;
+      }
 }
 
 @media screen and (max-width: 480px) {
@@ -239,4 +259,24 @@
     .semi-circle {
         max-width: 220px;
     }
+    .feedback-options {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+      }
+    
+      .feedback-options button {
+        min-width: 60px;
+        font-size: 0.75rem;
+        padding: 4px;
+      }
+    
+      .feedback-options .emoji {
+        font-size: 1rem;
+      }
+    
+      .feedback-options .label {
+        font-size: 0.65rem;
+      }
 }
