@@ -87,10 +87,11 @@ function ResultPage({ result }) {
             <div className="label">Excellent</div>
           </button>
         </div>
-
         <div className="thought-box">
-          <textarea placeholder="Share your thought..." rows="3"></textarea>
-        </div>
+  <textarea placeholder="Share your thought..." rows="3"></textarea>
+  <button className="submit-thought-btn">Send</button>
+</div>
+
       </div>
     </div>
   );
