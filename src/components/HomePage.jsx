@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMenu, FiBell } from "react-icons/fi"; 
@@ -13,9 +12,12 @@ const HomePage = () => {
   const [textClaim, setTextClaim] = useState("");
   const [imageFile, setImageFile] = useState(null);
 
-  
-  const [checkTextClaim, { data: textData, error: textError, isLoading: isTextLoading }] = useCheckTextClaimMutation();
-  const [checkImageClaim, { data: imageData, error: imageError, isLoading: isImageLoading }] = useCheckImageClaimMutation();
+  // Commenting out unused variables for now
+  // const [checkTextClaim, { data: textData, error: textError, isLoading: isTextLoading }] = useCheckTextClaimMutation();
+  // const [checkImageClaim, { data: imageData, error: imageError, isLoading: isImageLoading }] = useCheckImageClaimMutation();
+
+  const [checkTextClaim, { isLoading: isTextLoading }] = useCheckTextClaimMutation();
+  const [checkImageClaim, { isLoading: isImageLoading }] = useCheckImageClaimMutation();
 
   const handleCheck = async () => {
     setLoading(true); 
@@ -109,7 +111,6 @@ const HomePage = () => {
         ))}
       </div>
 
-      
       {loading && <GlobalLoader />} 
     </div>
   );
