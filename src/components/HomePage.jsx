@@ -1,30 +1,61 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClipLoader } from "react-spinners";
+import { FiMenu, FiBell } from "react-icons/fi"; 
+import { useCheckImageClaimMutation, useCheckTextClaimMutation } from "../api/checkApiSlice";
 import claims from "../data/claimsData";
+import GlobalLoader from "../components/GlobalLoader"; 
 import "./Homepage.css";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [textClaim, setTextClaim] = useState("");
+  const [imageFile, setImageFile] = useState(null);
 
-  const handleCheck = () => {
-    setLoading(true);
+  
+  const [checkTextClaim, { data: textData, error: textError, isLoading: isTextLoading }] = useCheckTextClaimMutation();
+  const [checkImageClaim, { data: imageData, error: imageError, isLoading: isImageLoading }] = useCheckImageClaimMutation();
+
+  const handleCheck = async () => {
+    setLoading(true); 
+
+    if (textClaim) {
+      try {
+        await checkTextClaim({ claim: textClaim }).unwrap();
+      } catch (error) {
+        console.error("Text claim verification failed", error);
+      }
+    } else if (imageFile) {
+      const formData = new FormData();
+      formData.append("file", imageFile);
+      try {
+        await checkImageClaim(formData).unwrap();
+      } catch (error) {
+        console.error("Image claim verification failed", error);
+      }
+    }
+
     setTimeout(() => {
-      setLoading(false);
+      setLoading(false); 
       navigate("/result");
     }, 1500);
   };
 
+  const handleTextInputChange = (e) => setTextClaim(e.target.value);
+  const handleImageInputChange = (e) => setImageFile(e.target.files[0]);
+
   return (
     <div className="home-container">
-      
       <div className="top-bar">
-        <div className="dropdown-icon">☰</div>
-        <div className="notification-icon">🔔</div>
+        <div className="dropdown-icon">
+          <FiMenu size={24} />
+        </div>
+        <div className="notification-icon">
+          <FiBell size={24} />
+        </div>
       </div>
 
-      {/* Language Selector */}
       <div className="lang-section">
         <label htmlFor="language">Language:</label>
         <select id="language" defaultValue="english">
@@ -35,41 +66,31 @@ const HomePage = () => {
         </select>
       </div>
 
-      
       <textarea
         className="claim-input"
-        placeholder="type text/paste url"
-      ></textarea>
+        placeholder="Type text/paste URL"
+        value={textClaim}
+        onChange={handleTextInputChange}
+      />
 
-      
       <button
         className="check-btn"
-        style={{
-          width: "auto",
-          padding: "8px 15px",
-          marginLeft: "0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "8px"
-        }}
         onClick={handleCheck}
-        disabled={loading}
+        disabled={loading || (isTextLoading || isImageLoading)}
       >
-        {loading ? <ClipLoader size={18} color="#ffffff" /> : "Check"}
+        Check
       </button>
 
-      {/* Upload Image */}
       <div className="upload-section">
         <input
           type="file"
           id="upload-image"
           className="upload-input"
           accept=".jpg,.png"
+          onChange={handleImageInputChange}
         />
       </div>
 
-      
       <div className="recent-section">
         <h3>Recent Truth Check</h3>
         <hr />
@@ -87,6 +108,9 @@ const HomePage = () => {
           </div>
         ))}
       </div>
+
+      
+      {loading && <GlobalLoader />} 
     </div>
   );
 };
