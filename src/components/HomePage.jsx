@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiMenu, FiBell } from "react-icons/fi"; 
+import { FiMenu, FiBell } from "react-icons/fi";
 import { useCheckImageClaimMutation, useCheckTextClaimMutation } from "../api/checkApiSlice";
 import claims from "../data/claimsData";
-import GlobalLoader from "../components/GlobalLoader"; 
+import GlobalLoader from "../components/GlobalLoader";
+import Sidebar from "../components/Sidebar"; 
 import "./Homepage.css";
 
 const HomePage = () => {
@@ -11,16 +12,18 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [textClaim, setTextClaim] = useState("");
   const [imageFile, setImageFile] = useState(null);
-
-  // Commenting out unused variables for now
-  // const [checkTextClaim, { data: textData, error: textError, isLoading: isTextLoading }] = useCheckTextClaimMutation();
-  // const [checkImageClaim, { data: imageData, error: imageError, isLoading: isImageLoading }] = useCheckImageClaimMutation();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("english");
 
   const [checkTextClaim, { isLoading: isTextLoading }] = useCheckTextClaimMutation();
   const [checkImageClaim, { isLoading: isImageLoading }] = useCheckImageClaimMutation();
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
   const handleCheck = async () => {
-    setLoading(true); 
+    setLoading(true);
 
     if (textClaim) {
       try {
@@ -39,33 +42,32 @@ const HomePage = () => {
     }
 
     setTimeout(() => {
-      setLoading(false); 
+      setLoading(false);
       navigate("/result");
     }, 1500);
   };
 
   const handleTextInputChange = (e) => setTextClaim(e.target.value);
   const handleImageInputChange = (e) => setImageFile(e.target.files[0]);
+  const handleLanguageChange = (e) => setSelectedLanguage(e.target.value);
 
   return (
     <div className="home-container">
+      {/* Sidebar for Language Selection */}
+      <Sidebar
+        isOpen={isSidebarOpen}
+        selectedLanguage={selectedLanguage}
+        onChangeLanguage={handleLanguageChange}
+        onClose={toggleSidebar} // 🛠️ This was missing
+      />
+
       <div className="top-bar">
-        <div className="dropdown-icon">
+        <div className="dropdown-icon" onClick={toggleSidebar}>
           <FiMenu size={24} />
         </div>
         <div className="notification-icon">
           <FiBell size={24} />
         </div>
-      </div>
-
-      <div className="lang-section">
-        <label htmlFor="language">Language:</label>
-        <select id="language" defaultValue="english">
-          <option value="english">English</option>
-          <option value="igbo">Igbo</option>
-          <option value="yoruba">Yoruba</option>
-          <option value="hausa">Hausa</option>
-        </select>
       </div>
 
       <textarea
@@ -111,7 +113,7 @@ const HomePage = () => {
         ))}
       </div>
 
-      {loading && <GlobalLoader />} 
+      {loading && <GlobalLoader />}
     </div>
   );
 };
