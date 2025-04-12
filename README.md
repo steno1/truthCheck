@@ -50,10 +50,8 @@ After a claim is checked, users can:
 
 Rate the result (Good, Bad, Confusing, Excellent)
 
-Leave a short comment
-
 (This data can be POSTed to a feedback endpoint for analysis.)
 
 👥 Team
-This is a collaborative sprint project. Each member handles a section (frontend, backend, testing, deployment). 
+This is a collaborative sprint project. Each member handles a section (frontend, backend, testing). 
 
