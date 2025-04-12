@@ -4,7 +4,7 @@ import { FiMenu, FiBell } from "react-icons/fi";
 import { useCheckImageClaimMutation, useCheckTextClaimMutation } from "../api/checkApiSlice";
 import claims from "../data/claimsData";
 import GlobalLoader from "../components/GlobalLoader";
-import Sidebar from "../components/Sidebar"; 
+import Sidebar from "../components/Sidebar";
 import "./Homepage.css";
 
 const HomePage = () => {
@@ -18,33 +18,56 @@ const HomePage = () => {
   const [checkTextClaim, { isLoading: isTextLoading }] = useCheckTextClaimMutation();
   const [checkImageClaim, { isLoading: isImageLoading }] = useCheckImageClaimMutation();
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
+  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleCheck = async () => {
     setLoading(true);
 
-    if (textClaim) {
-      try {
-        await checkTextClaim({ claim: textClaim }).unwrap();
-      } catch (error) {
-        console.error("Text claim verification failed", error);
-      }
-    } else if (imageFile) {
-      const formData = new FormData();
-      formData.append("file", imageFile);
-      try {
-        await checkImageClaim(formData).unwrap();
-      } catch (error) {
-        console.error("Image claim verification failed", error);
-      }
-    }
+    try {
+      let response = null;
 
-    setTimeout(() => {
+      
+      if (textClaim) {
+        const requestBody = {
+          text: textClaim,  
+          language: selectedLanguage === "english" ? "en" : selectedLanguage.toLowerCase(),
+        };
+
+        
+        response = await checkTextClaim(requestBody).unwrap();
+      } else if (imageFile) {
+        
+        const formData = new FormData();
+        formData.append("file", imageFile); 
+        response = await checkImageClaim(formData).unwrap();
+      }
+
+      
+      const resultData = response && response.claim ? response : {
+        claim: "Unknown claim",
+        confidence: 0,
+        explanation: "No explanation available.",
+        sources: ["No sources provided"],
+        verdict: "Unverifiable"
+      };
+
+      
+      navigate("/result", { state: resultData });
+
+    } catch (error) {
+      console.error("Error during fact check:", error);  
+      
+      const resultData = {
+        claim: "Unknown claim",
+        confidence: 0,
+        explanation: "No explanation available.",
+        sources: ["No sources provided"],
+        verdict: "Unverifiable"
+      };
+      navigate("/result", { state: resultData });
+    } finally {
       setLoading(false);
-      navigate("/result");
-    }, 1500);
+    }
   };
 
   const handleTextInputChange = (e) => setTextClaim(e.target.value);
@@ -53,12 +76,11 @@ const HomePage = () => {
 
   return (
     <div className="home-container">
-      {/* Sidebar for Language Selection */}
       <Sidebar
         isOpen={isSidebarOpen}
         selectedLanguage={selectedLanguage}
         onChangeLanguage={handleLanguageChange}
-        onClose={toggleSidebar} // 🛠️ This was missing
+        onClose={toggleSidebar}
       />
 
       <div className="top-bar">
@@ -80,7 +102,7 @@ const HomePage = () => {
       <button
         className="check-btn"
         onClick={handleCheck}
-        disabled={loading || (isTextLoading || isImageLoading)}
+        disabled={loading || isTextLoading || isImageLoading}
       >
         Check
       </button>
@@ -105,7 +127,9 @@ const HomePage = () => {
               <p>
                 <span style={{ color: "#333", fontWeight: "bold" }}>Claim:</span>
                 <span style={{ color: "#777" }}>{claim.text}</span>
-                <span className="see-results">See Results</span>
+                <span className="see-results" onClick={() => navigate(`/result/${claim.id}`)}>
+                  See Results
+                </span>
               </p>
             </div>
             <img src={claim.image} alt="claim" className="claim-img" />

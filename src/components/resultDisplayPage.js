@@ -1,15 +1,37 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate, useLocation } from 'react-router-dom';
 import './ResultPage.css';
 
-function ResultPage({ result }) {
-  const navigate = useNavigate(); 
+function ResultPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const result = location.state;
+
+  
+  if (!result) {
+    return (
+      <div className="result-page">
+        <p style={{ marginTop: "2rem", textAlign: "center" }}>
+          No result found. Please try checking a claim first.
+        </p>
+        <button onClick={() => navigate("/")}>Go Back</button>
+      </div>
+    );
+  }
+
+  
+  const { claim, confidence, explanation, sources, verdict } = result;
+
+  const formattedClaim = claim || 'Unknown claim';
+  const formattedConfidence = confidence !== undefined ? `${confidence}%` : "0%";
+  const formattedExplanation = explanation || "No explanation available.";
+  const formattedSources = sources?.length ? sources.join(', ') : "No sources provided";
+  const formattedVerdict = verdict || 'Unverifiable';
 
   return (
     <div className="result-page">
-      {/* Back Button */}
-      <button 
-        onClick={() => navigate('/')} 
+      <button
+        onClick={() => navigate('/')}
         style={{
           margin: '20px',
           padding: '8px 16px',
@@ -45,53 +67,48 @@ function ResultPage({ result }) {
       </div>
 
       <div className="result-summary">
-        <h2 className="verdict">{result || 'No result available'}</h2>
-        <p className="score">70/100</p>
+        <h2 className="verdict">{formattedVerdict}</h2>
+        <p className="score">{formattedConfidence}</p>
       </div>
 
       <div className="claim-box">
-        <strong>Claim:</strong> Over 150 persons have died from meningitis in Nigeria.
+        <strong>Claim:</strong> {formattedClaim}
       </div>
 
       <div className="finding-box">
-        <strong>What we found:</strong> Trusted sources like AP News and Nigeria CDC have confirmed the outbreak. It is serious and has spread over many states.
+        <strong>What we found:</strong> {formattedExplanation}
       </div>
 
       <div className="sources-box">
         <strong>Sources:</strong>
         <ul>
-          <li>Associated Press (April 2025)</li>
-          <li>NCDC official Twitter (April 2025)</li>
+          {formattedSources === "No sources provided" ? (
+            <li>{formattedSources}</li>
+          ) : (
+            formattedSources.split(', ').map((source, index) => (
+              <li key={index}>{source}</li>
+            ))
+          )}
         </ul>
       </div>
 
-      <button className="check-more-btn">Check More</button>
+      <button className="check-more-btn" onClick={() => navigate('/')}>
+        Check More
+      </button>
 
       <div className="feedback-section">
         <h3>Was this verification helpful?</h3>
         <div className="feedback-options">
-          <button>
-            <div className="emoji">😊</div>
-            <div className="label">Good</div>
-          </button>
-          <button>
-            <div className="emoji">😐</div>
-            <div className="label">Bad</div>
-          </button>
-          <button>
-            <div className="emoji">😕</div>
-            <div className="label">Confusing</div>
-          </button>
-          <button>
-            <div className="emoji">🌟</div>
-            <div className="label">Excellent</div>
-          </button>
+          <button><div className="emoji">😊</div><div className="label">Good</div></button>
+          <button><div className="emoji">😐</div><div className="label">Bad</div></button>
+          <button><div className="emoji">😕</div><div className="label">Confusing</div></button>
+          <button><div className="emoji">🌟</div><div className="label">Excellent</div></button>
         </div>
-        <div className="thought-box">
-  <textarea placeholder="Share your thought..." rows="3"></textarea>
-  <button className="submit-thought-btn">Send</button>
-</div>
 
+        <div className="thought-box">
+          <textarea placeholder="Share your thought..." rows="3"></textarea>
+          <button className="submit-thought-btn">Send</button>
+        </div>
       </div>
     </div>
   );

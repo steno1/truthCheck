@@ -1,53 +1,46 @@
-
 import { apiSlice } from './apiSlice';
 
 export const checkApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Text Claim Check
     checkTextClaim: builder.mutation({
       query: (claim) => ({
-        url: '/api/check/text',
+        url: '/check',  
         method: 'POST',
         body: claim,
       }),
     }),
 
-    // Image Claim Check
     checkImageClaim: builder.mutation({
       query: (formData) => ({
-        url: '/api/check/image',
+        url: '/check/image', 
         method: 'POST',
         body: formData,
       }),
     }),
 
-    // Get Recent Checks
     getRecentChecks: builder.query({
-      query: () => '/api/check/recent',
+      query: () => '/check/recent', 
       providesTags: ['Check'],
     }),
 
-    // Submit Feedback
     submitFeedback: builder.mutation({
       query: (feedback) => ({
-        url: '/api/feedback',
+        url: '/feedback',
         method: 'POST',
         body: feedback,
       }),
     }),
 
-    // Report False Claim
     reportClaim: builder.mutation({
       query: (reportData) => ({
-        url: '/api/report',
+        url: '/report',
         method: 'POST',
         body: reportData,
       }),
     }),
 
-    // Get Supported Languages
     getLanguages: builder.query({
-      query: () => '/api/languages',
+      query: () => '/languages', 
     }),
   }),
 });
