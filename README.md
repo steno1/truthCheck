@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+# 🧠 TruthCheck - Quick Claim Verification Tool
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+TruthCheck is a lightweight, multilingual web app designed to help Nigerians verify the authenticity of claims, images, and URLs. Built with simplicity and accessibility in mind, the platform provides instant fact-check results using advanced backend verification systems, while supporting multiple local languages.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+- 🔍 **Claim Verification**: Check claims via text or image uploads.  
+- 📊 **Fact-Check Results**: Dynamic UI showing confidence, verdict, sources, and explanations.
+- 🌐 **Multilingual Support**: Switch between English, Hausa, Igbo, and Yoruba.
+- 🖼️ **Recent Verifications**: Displays a list of recent checks for reference.
+- 💬 **User Feedback**: Rate the accuracy of results and share thoughts.
+- ⚡ **Fast & Lightweight**: Optimized for entry-level smartphones.
 
-### `npm start`
+## 🛠️ Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend**: React.js (with plain CSS, no frameworks)
+- **State Management**: Redux Toolkit & RTK Query
+- **Routing**: React Router
+- **Data Fetching**: RTK Query (via `createApi` and `fetchBaseQuery`)
+- **Deployment**: GitHub Pages / Netlify (CI/CD ready)
+- **Performance**: Code splitting, lazy loading, and caching
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🧱 Project Structure
 
-### `npm test`
+src/ ├── api/ # RTK Query API slice ├── assets/ # Images and static assets ├── components/ # Reusable UI components ├── data/ # Mock data (e.g., recent claims) ├── pages/ # HomePage and ResultPage ├── App.js # App entry with routes ├── main.jsx # React DOM render
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## 🧪 Testing (Planned)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Unit tests for reducers and components
+- Integration tests for user flows
+- E2E tests for verifying real-time result rendering
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 📦 Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+git clone https://github.com/TruthCheck/quickcheckingtool-frontend.git
 
-### `npm run eject`
+cd quickcheckingtool-frontend
+npm install
+npm start
+🔗 Backend Integration
+Frontend communicates with backend endpoints via RTK Query using two main mutations:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+checkTextClaim – Accepts text input and language.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+checkImageClaim – Accepts image uploads as FormData.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+📥 Feedback Flow
+After a claim is checked, users can:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Rate the result (Good, Bad, Confusing, Excellent)
 
-## Learn More
+Leave a short comment
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+(This data can be POSTed to a feedback endpoint for analysis.)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+👥 Team
+This is a collaborative sprint project. Each member handles a section (frontend, backend, testing, deployment). 
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
