@@ -1,7 +1,7 @@
-// src/components/GlobalLoader.js
+
 import React from "react";
 import { ClipLoader } from "react-spinners";
-import "./GlobalLoader.css"; // Import CSS for the loader
+import "./GlobalLoader.css"; 
 
 const GlobalLoader = () => {
   return (

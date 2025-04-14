@@ -7,8 +7,8 @@ function ResultPage() {
   const location = useLocation();
   const result = location.state;
 
-  
   if (!result) {
+    console.log("No result passed. Did you reload the result page directly?");
     return (
       <div className="result-page">
         <p style={{ marginTop: "2rem", textAlign: "center" }}>
@@ -19,8 +19,10 @@ function ResultPage() {
     );
   }
 
-  
-  const { claim, confidence, explanation, sources, verdict } = result;
+  // ✅ Correctly destructure the keys coming from HomePage
+  console.log("Raw result passed:", location.state);
+
+  const { claim, verdict, confidence, explanation, sources } = result;
 
   const formattedClaim = claim || 'Unknown claim';
   const formattedConfidence = confidence !== undefined ? `${confidence}%` : "0%";

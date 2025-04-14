@@ -1,8 +1,11 @@
-
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+
+const baseUrl = process.env.REACT_APP_GOOGLE_FACT_CHECK_BASE_URL;
+
 export const apiSlice = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://factcheck-877d.onrender.com/api' }), 
+  baseQuery: fetchBaseQuery({ baseUrl }),  
+
   tagTypes: ['Check', 'Feedback', 'Report'],
   endpoints: (builder) => ({}),
 });

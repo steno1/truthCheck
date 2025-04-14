@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMenu, FiBell } from "react-icons/fi";
-import { useCheckImageClaimMutation, useCheckTextClaimMutation } from "../api/checkApiSlice";
+import { useLazyCheckTextClaimQuery } from "../api/checkApiSlice";
 import claims from "../data/claimsData";
 import GlobalLoader from "../components/GlobalLoader";
 import Sidebar from "../components/Sidebar";
@@ -11,58 +11,40 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [textClaim, setTextClaim] = useState("");
-  const [imageFile, setImageFile] = useState(null);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("english");
 
-  const [checkTextClaim, { isLoading: isTextLoading }] = useCheckTextClaimMutation();
-  const [checkImageClaim, { isLoading: isImageLoading }] = useCheckImageClaimMutation();
+  const [triggerCheckTextClaim] = useLazyCheckTextClaimQuery();
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleCheck = async () => {
+    if (!textClaim.trim()) return;
     setLoading(true);
 
     try {
-      let response = null;
+      const response = await triggerCheckTextClaim(textClaim).unwrap(); 
 
-      
-      if (textClaim) {
-        const requestBody = {
-          text: textClaim,  
-          language: selectedLanguage === "english" ? "en" : selectedLanguage.toLowerCase(),
-        };
+      const claimsResult = response.claims && response.claims.length > 0 ? response.claims[0] : null;
 
-        
-        response = await checkTextClaim(requestBody).unwrap();
-      } else if (imageFile) {
-        
-        const formData = new FormData();
-        formData.append("file", imageFile); 
-        response = await checkImageClaim(formData).unwrap();
-      }
-
-      
-      const resultData = response && response.claim ? response : {
-        claim: "Unknown claim",
-        confidence: 0,
-        explanation: "No explanation available.",
-        sources: ["No sources provided"],
-        verdict: "Unverifiable"
+      const resultData = {
+        claim: textClaim,
+        confidence: 70,
+        explanation: claimsResult?.text || "No explanation found.",
+        sources: claimsResult?.claimReview?.map((review) => review.url) || ["No sources found"],
+        verdict: claimsResult?.claimReview?.[0]?.textualRating || "Unverifiable",
       };
 
-      
       navigate("/result", { state: resultData });
-
     } catch (error) {
-      console.error("Error during fact check:", error);  
-      
+      console.error("🔥 Error during fact check:", error);
+
       const resultData = {
-        claim: "Unknown claim",
+        claim: textClaim,
         confidence: 0,
         explanation: "No explanation available.",
         sources: ["No sources provided"],
-        verdict: "Unverifiable"
+        verdict: "Unverifiable",
       };
       navigate("/result", { state: resultData });
     } finally {
@@ -71,15 +53,13 @@ const HomePage = () => {
   };
 
   const handleTextInputChange = (e) => setTextClaim(e.target.value);
-  const handleImageInputChange = (e) => setImageFile(e.target.files[0]);
-  const handleLanguageChange = (e) => setSelectedLanguage(e.target.value);
 
   return (
     <div className="home-container">
       <Sidebar
         isOpen={isSidebarOpen}
         selectedLanguage={selectedLanguage}
-        onChangeLanguage={handleLanguageChange}
+        onChangeLanguage={setSelectedLanguage}
         onClose={toggleSidebar}
       />
 
@@ -102,20 +82,10 @@ const HomePage = () => {
       <button
         className="check-btn"
         onClick={handleCheck}
-        disabled={loading || isTextLoading || isImageLoading}
+        disabled={loading}
       >
-        Check
+        {loading ? "Verifying..." : "Check"}
       </button>
-
-      <div className="upload-section">
-        <input
-          type="file"
-          id="upload-image"
-          className="upload-input"
-          accept=".jpg,.png"
-          onChange={handleImageInputChange}
-        />
-      </div>
 
       <div className="recent-section">
         <h3>Recent Truth Check</h3>
@@ -127,7 +97,10 @@ const HomePage = () => {
               <p>
                 <span style={{ color: "#333", fontWeight: "bold" }}>Claim:</span>
                 <span style={{ color: "#777" }}>{claim.text}</span>
-                <span className="see-results" onClick={() => navigate(`/result/${claim.id}`)}>
+                <span
+                  className="see-results"
+                  onClick={() => navigate(`/result/${claim.id}`)}
+                >
                   See Results
                 </span>
               </p>

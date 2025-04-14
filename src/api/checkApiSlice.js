@@ -1,55 +1,31 @@
 import { apiSlice } from './apiSlice';
 
+
+
+const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
+
+
 export const checkApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    checkTextClaim: builder.mutation({
-      query: (claim) => ({
-        url: '/check',  
-        method: 'POST',
-        body: claim,
-      }),
-    }),
+    // Google API: Claim check (text only, via GET)
+    checkTextClaim: builder.query({
+      query: (claimText) => {
+        if (!claimText || typeof claimText !== 'string') {
+          console.error("Invalid claim text passed:", claimText);
+          return { url: "" };
+        }
 
-    checkImageClaim: builder.mutation({
-      query: (formData) => ({
-        url: '/check/image', 
-        method: 'POST',
-        body: formData,
-      }),
-    }),
+        // Directly use the claim text and encode it
+        const encodedText = encodeURIComponent(claimText);
 
-    getRecentChecks: builder.query({
-      query: () => '/check/recent', 
-      providesTags: ['Check'],
-    }),
-
-    submitFeedback: builder.mutation({
-      query: (feedback) => ({
-        url: '/feedback',
-        method: 'POST',
-        body: feedback,
-      }),
-    }),
-
-    reportClaim: builder.mutation({
-      query: (reportData) => ({
-        url: '/report',
-        method: 'POST',
-        body: reportData,
-      }),
-    }),
-
-    getLanguages: builder.query({
-      query: () => '/languages', 
+        return {
+          url: `/claims:search?query=${encodedText}&key=${API_KEY}`,
+        };
+      },
     }),
   }),
 });
 
 export const {
-  useCheckTextClaimMutation,
-  useCheckImageClaimMutation,
-  useGetRecentChecksQuery,
-  useSubmitFeedbackMutation,
-  useReportClaimMutation,
-  useGetLanguagesQuery,
+  useLazyCheckTextClaimQuery,
 } = checkApiSlice;
