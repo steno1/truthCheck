@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './ResultPage.css';
 
@@ -6,6 +6,9 @@ function ResultPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const result = location.state;
+
+  const [feedback, setFeedback] = useState('');
+  const [thought, setThought] = useState('');
 
   if (!result) {
     console.log("No result passed. Did you reload the result page directly?");
@@ -30,6 +33,19 @@ function ResultPage() {
     ? sources.join(', ')
     : "No sources provided";
   const formattedVerdict = verdict || "Unverifiable";
+
+  const handleFeedback = (emoji) => {
+    setFeedback(emoji);
+    // Send feedback to the backend if needed
+    console.log("Feedback received:", emoji);
+  };
+
+  const handleSubmitThought = () => {
+    if (thought.trim()) {
+      console.log("User thought:", thought);
+      // Send thought to the backend
+    }
+  };
 
   return (
     <div className="result-page">
@@ -102,16 +118,40 @@ function ResultPage() {
       <div className="feedback-section">
         <h3>Was this verification helpful?</h3>
         <div className="feedback-options">
-          <button><div className="emoji">😊</div><div className="label">Good</div></button>
-          <button><div className="emoji">😐</div><div className="label">Bad</div></button>
-          <button><div className="emoji">😕</div><div className="label">Confusing</div></button>
-          <button><div className="emoji">🌟</div><div className="label">Excellent</div></button>
+          <button onClick={() => handleFeedback('😊')}>
+            <div className="emoji">😊</div>
+            <div className="label">Good</div>
+          </button>
+          <button onClick={() => handleFeedback('😐')}>
+            <div className="emoji">😐</div>
+            <div className="label">Bad</div>
+          </button>
+          <button onClick={() => handleFeedback('😕')}>
+            <div className="emoji">😕</div>
+            <div className="label">Confusing</div>
+          </button>
+          <button onClick={() => handleFeedback('🌟')}>
+            <div className="emoji">🌟</div>
+            <div className="label">Excellent</div>
+          </button>
         </div>
 
         <div className="thought-box">
-          <textarea placeholder="Share your thought..." rows="3"></textarea>
-          <button className="submit-thought-btn">Send</button>
+          <textarea 
+            placeholder="Share your thought..." 
+            rows="3" 
+            value={thought}
+            onChange={(e) => setThought(e.target.value)}
+          />
+          <button className="submit-thought-btn" onClick={handleSubmitThought}>Send</button>
         </div>
+
+        {/* Displaying the selected feedback */}
+        {feedback && (
+          <div className="feedback-display">
+            <p>You selected: {feedback}</p>
+          </div>
+        )}
       </div>
     </div>
   );

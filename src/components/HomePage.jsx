@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMenu, FiBell } from "react-icons/fi";
-import { useCheckTextClaimMutation } from "../api/checkApiSlice";
+import { useCheckTextClaimMutation, useCheckImageClaimMutation } from "../api/checkApiSlice";
 import claims from "../data/claimsData";
 import GlobalLoader from "../components/GlobalLoader";
 import Sidebar from "../components/Sidebar";
@@ -10,32 +10,59 @@ import "./Homepage.css";
 const HomePage = () => {
   const navigate = useNavigate();
   const [textClaim, setTextClaim] = useState("");
+  const [imageClaim, setImageClaim] = useState(null); 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("english");
-  const [triggerCheckTextClaim, { isLoading, isError }] = useCheckTextClaimMutation();
+  const [triggerCheckTextClaim, { isLoading: isTextLoading, isError: isTextError }] = useCheckTextClaimMutation();
+  const [triggerCheckImageClaim, { isLoading: isImageLoading, isError: isImageError }] = useCheckImageClaimMutation();
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageClaim(file); 
+    }
+  };
+
   const handleCheck = async () => {
-    if (!textClaim.trim()) return;
+    if (!textClaim.trim() && !imageClaim) return;
 
     try {
-      const response = await triggerCheckTextClaim(textClaim).unwrap();
-      const claimsResult = response.claims?.[0] || null;
+      let resultData = {};
 
-      const resultData = {
-        claim: textClaim,
-        confidence: 70,
-        explanation: claimsResult?.text || "No explanation found.",
-        sources: claimsResult?.claimReview?.map((review) => review.url) || ["No sources found"],
-        verdict: claimsResult?.claimReview?.[0]?.textualRating || "Unverifiable",
-      };
+      // Check for text claim
+      if (textClaim.trim()) {
+        const response = await triggerCheckTextClaim(textClaim).unwrap();
+        const claimsResult = response.claims?.[0] || null;
+
+        resultData = {
+          claim: textClaim,
+          confidence: 70,
+          explanation: claimsResult?.text || "No explanation found.",
+          sources: claimsResult?.claimReview?.map((review) => review.url) || ["No sources found"],
+          verdict: claimsResult?.claimReview?.[0]?.textualRating || "Unverifiable",
+        };
+      }
+
+      // If an image is selected, handle image verification
+      if (imageClaim) {
+        const response = await triggerCheckImageClaim(imageClaim).unwrap();
+        
+        resultData = {
+          claim: "Image Claim",
+          confidence: response.confidence || 0,
+          explanation: response.explanation || "No explanation found.",
+          sources: response.sources || ["No sources found"],
+          verdict: response.verdict || "Unverifiable",
+        };
+      }
 
       navigate("/result", { state: resultData });
     } catch (error) {
       console.error("🔥 Error during fact check:", error);
       const resultData = {
-        claim: textClaim,
+        claim: textClaim || "Image Claim",
         confidence: 0,
         explanation: "No explanation available.",
         sources: ["No sources provided"],
@@ -70,17 +97,27 @@ const HomePage = () => {
         onChange={(e) => setTextClaim(e.target.value)}
       />
 
+      {/* Image Upload Section */}
+      <div className="image-upload">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+        {imageClaim && <p>Image selected: {imageClaim.name}</p>}
+      </div>
+
       <button
         className="check-btn"
         onClick={handleCheck}
-        disabled={isLoading}
+        disabled={isTextLoading || isImageLoading}
       >
-        {isLoading ? "Verifying..." : "Check"}
+        {isTextLoading || isImageLoading ? "Verifying..." : "Check"}
       </button>
 
-      {isLoading && <GlobalLoader />}
+      {(isTextLoading || isImageLoading) && <GlobalLoader />}
 
-      {isError && <div className="error-message">Error during fact check. Please try again.</div>}
+      {(isTextError || isImageError) && <div className="error-message">Error during fact check. Please try again.</div>}
 
       <div className="recent-section">
         <h3>Recent Truth Check</h3>

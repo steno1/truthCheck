@@ -16,7 +16,26 @@ export const checkApiSlice = apiSlice.injectEndpoints({
         };
       },
     }),
+
+    // New endpoint for image claim verification
+    checkImageClaim: builder.mutation({
+      query: (imageFile) => {
+        if (!imageFile || !(imageFile instanceof File)) {
+          console.error("Invalid image file passed:", imageFile);
+          return { url: "", method: "POST", body: {} };
+        }
+
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        return {
+          url: '/api/check/image', 
+          method: 'POST',
+          body: formData,
+        };
+      },
+    }),
   }),
 });
 
-export const { useCheckTextClaimMutation } = checkApiSlice;
+export const { useCheckTextClaimMutation, useCheckImageClaimMutation } = checkApiSlice;
