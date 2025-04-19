@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMenu, FiBell } from "react-icons/fi";
-import { useLazyCheckTextClaimQuery } from "../api/checkApiSlice";
+import { useCheckTextClaimMutation } from "../api/checkApiSlice";
 import claims from "../data/claimsData";
 import GlobalLoader from "../components/GlobalLoader";
 import Sidebar from "../components/Sidebar";
@@ -9,23 +9,19 @@ import "./Homepage.css";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
   const [textClaim, setTextClaim] = useState("");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("english");
-
-  const [triggerCheckTextClaim] = useLazyCheckTextClaimQuery();
+  const [triggerCheckTextClaim, { isLoading, isError }] = useCheckTextClaimMutation();
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const handleCheck = async () => {
     if (!textClaim.trim()) return;
-    setLoading(true);
 
     try {
-      const response = await triggerCheckTextClaim(textClaim).unwrap(); 
-
-      const claimsResult = response.claims && response.claims.length > 0 ? response.claims[0] : null;
+      const response = await triggerCheckTextClaim(textClaim).unwrap();
+      const claimsResult = response.claims?.[0] || null;
 
       const resultData = {
         claim: textClaim,
@@ -38,7 +34,6 @@ const HomePage = () => {
       navigate("/result", { state: resultData });
     } catch (error) {
       console.error("🔥 Error during fact check:", error);
-
       const resultData = {
         claim: textClaim,
         confidence: 0,
@@ -47,12 +42,8 @@ const HomePage = () => {
         verdict: "Unverifiable",
       };
       navigate("/result", { state: resultData });
-    } finally {
-      setLoading(false);
     }
   };
-
-  const handleTextInputChange = (e) => setTextClaim(e.target.value);
 
   return (
     <div className="home-container">
@@ -76,16 +67,20 @@ const HomePage = () => {
         className="claim-input"
         placeholder="Type text/paste URL"
         value={textClaim}
-        onChange={handleTextInputChange}
+        onChange={(e) => setTextClaim(e.target.value)}
       />
 
       <button
         className="check-btn"
         onClick={handleCheck}
-        disabled={loading}
+        disabled={isLoading}
       >
-        {loading ? "Verifying..." : "Check"}
+        {isLoading ? "Verifying..." : "Check"}
       </button>
+
+      {isLoading && <GlobalLoader />}
+
+      {isError && <div className="error-message">Error during fact check. Please try again.</div>}
 
       <div className="recent-section">
         <h3>Recent Truth Check</h3>
@@ -109,8 +104,6 @@ const HomePage = () => {
           </div>
         ))}
       </div>
-
-      {loading && <GlobalLoader />}
     </div>
   );
 };

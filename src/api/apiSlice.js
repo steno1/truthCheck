@@ -1,12 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const baseUrl = process.env.REACT_APP_BACKEND_BASE_URL;
+
+const baseUrl = process.env.REACT_APP_BACKEND_BASE_URL || "http://localhost:5000"; 
+
 
 export const apiSlice = createApi({
-  reducerPath: 'api', 
   baseQuery: fetchBaseQuery({ baseUrl }),
+
   tagTypes: ['Check', 'Feedback', 'Report'],
   endpoints: (builder) => ({}),
 });
 
-export default apiSlice;
+export default apiSlice.reducer;
+
+
+
+

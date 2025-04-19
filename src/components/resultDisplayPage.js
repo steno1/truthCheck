@@ -19,16 +19,17 @@ function ResultPage() {
     );
   }
 
-  // ✅ Correctly destructure the keys coming from HomePage
   console.log("Raw result passed:", location.state);
 
-  const { claim, verdict, confidence, explanation, sources } = result;
+  const { claims, score } = result;
+  const claimData = claims && claims[0];
+  const review = claimData?.claimReview?.[0];
 
-  const formattedClaim = claim || 'Unknown claim';
-  const formattedConfidence = confidence !== undefined ? `${confidence}%` : "0%";
-  const formattedExplanation = explanation || "No explanation available.";
-  const formattedSources = sources?.length ? sources.join(', ') : "No sources provided";
-  const formattedVerdict = verdict || 'Unverifiable';
+  const formattedClaim = claimData?.text || 'Unknown claim';
+  const formattedConfidence = score ? `${score}%` : "0%";
+  const formattedExplanation = review?.textualRating || "No explanation available.";
+  const formattedSources = claimData?.claimReview?.map((r) => r.url).join(', ') || "No sources provided";
+  const formattedVerdict = review?.textualRating || 'Unverifiable';
 
   return (
     <div className="result-page">
@@ -41,7 +42,7 @@ function ResultPage() {
           color: '#fff',
           border: 'none',
           borderRadius: '5px',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
       >
         ← Back
