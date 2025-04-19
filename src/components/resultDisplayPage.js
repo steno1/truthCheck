@@ -21,15 +21,15 @@ function ResultPage() {
 
   console.log("Raw result passed:", location.state);
 
-  const { claims, score } = result;
-  const claimData = claims && claims[0];
-  const review = claimData?.claimReview?.[0];
+  const { claim, confidence, explanation, sources, verdict } = result;
 
-  const formattedClaim = claimData?.text || 'Unknown claim';
-  const formattedConfidence = score ? `${score}%` : "0%";
-  const formattedExplanation = review?.textualRating || "No explanation available.";
-  const formattedSources = claimData?.claimReview?.map((r) => r.url).join(', ') || "No sources provided";
-  const formattedVerdict = review?.textualRating || 'Unverifiable';
+  const formattedClaim = claim || "Unknown claim";
+  const formattedConfidence = confidence ? `${confidence}%` : "0%";
+  const formattedExplanation = explanation || "No explanation available.";
+  const formattedSources = sources?.length
+    ? sources.join(', ')
+    : "No sources provided";
+  const formattedVerdict = verdict || "Unverifiable";
 
   return (
     <div className="result-page">
@@ -89,7 +89,7 @@ function ResultPage() {
             <li>{formattedSources}</li>
           ) : (
             formattedSources.split(', ').map((source, index) => (
-              <li key={index}>{source}</li>
+              <li key={index}><a href={source} target="_blank" rel="noopener noreferrer">{source}</a></li>
             ))
           )}
         </ul>

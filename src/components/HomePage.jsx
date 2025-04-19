@@ -85,24 +85,28 @@ const HomePage = () => {
       <div className="recent-section">
         <h3>Recent Truth Check</h3>
         <hr />
-        {claims.map((claim) => (
-          <div key={claim.id} className="claim-card">
-            <div className="claim-info">
-              <p className="claim-date">{claim.date}</p>
-              <p>
-                <span style={{ color: "#333", fontWeight: "bold" }}>Claim:</span>
-                <span style={{ color: "#777" }}>{claim.text}</span>
-                <span
-                  className="see-results"
-                  onClick={() => navigate(`/result/${claim.id}`)}
-                >
-                  See Results
-                </span>
-              </p>
+        {claims && claims.length > 0 ? (
+          claims.map((claim) => (
+            <div key={claim.id} className="claim-card">
+              <div className="claim-info">
+                <p className="claim-date">{claim.date}</p>
+                <p>
+                  <span style={{ color: "#333", fontWeight: "bold" }}>Claim:</span>
+                  <span style={{ color: "#777" }}>{claim.text}</span>
+                  <span
+                    className="see-results"
+                    onClick={() => navigate(`/result/${claim.id}`)}
+                  >
+                    See Results
+                  </span>
+                </p>
+              </div>
+              <img src={claim.image} alt="claim" className="claim-img" />
             </div>
-            <img src={claim.image} alt="claim" className="claim-img" />
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>No recent claims available.</p>
+        )}
       </div>
     </div>
   );
