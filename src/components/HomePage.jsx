@@ -35,16 +35,23 @@ const HomePage = () => {
       if (textClaim.trim()) {
         const response = await triggerCheckTextClaim(textClaim).unwrap();
         const claimsResult = response.claims?.[0] || null;
-        
-        resultData = {
-          claim: textClaim,
-          confidence: 70,
-          explanation: claimsResult?.claimReview?.[0]?.text || 
-                       claimsResult?.claimReview?.[0]?.title || 
-                       "No explanation found.",
-          sources: claimsResult?.claimReview?.map((review) => review.url) || ["No sources found"],
-          verdict: claimsResult?.claimReview?.[0]?.textualRating || "Unverifiable",
-        };
+        console.log(claimsResult);
+      
+  resultData = {
+    claim: textClaim,
+    confidence: 70,
+    explanation: claimsResult?.claimReview?.[0]?.text || 
+                 claimsResult?.claimReview?.[0]?.title || 
+                 claimsResult?.claimReview?.[0]?.textualRating || 
+                 "No explanation found.",  // Fallback if no explanation is found
+    sources: claimsResult?.claimReview?.map((review) => review.url) || ["No sources found"],
+    verdict: claimsResult?.claimReview?.[0]?.textualRating || "Unverifiable",
+  };
+
+  // If there's a verdict, use it as the explanation
+  if (claimsResult?.claimReview?.[0]?.textualRating) {
+    resultData.explanation = claimsResult?.claimReview?.[0]?.textualRating;
+  }
         
       }
 
