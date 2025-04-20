@@ -44,14 +44,14 @@ export const checkApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    // Save the claim result to the backend
-    saveClaimResult: builder.mutation({
-      query: (resultData) => ({
-        url: '/api/check/save',  
-        method: 'POST',
-        body: resultData,  
-      }),
-    }),
+    // Save the claim result to the backend - COMMENTED OUT
+    // saveClaimResult: builder.mutation({
+    //   query: (resultData) => ({
+    //     url: '/api/check/save',  
+    //     method: 'POST',
+    //     body: resultData,  
+    //   }),
+    // }),
   }),
 });
 
@@ -59,5 +59,5 @@ export const {
   useCheckTextClaimMutation,
   useCheckImageClaimMutation,
   useGetRecentChecksQuery,
-  useSaveClaimResultMutation,  
+  // useSaveClaimResultMutation,  // COMMENTED OUT
 } = checkApiSlice;

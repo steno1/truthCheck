@@ -5,7 +5,7 @@ import {
   useCheckTextClaimMutation,
   useCheckImageClaimMutation,
   useGetRecentChecksQuery,
-  useSaveClaimResultMutation,
+  // useSaveClaimResultMutation,  // COMMENTED OUT
 } from "../api/checkApiSlice";
 import GlobalLoader from "../components/GlobalLoader";
 import Sidebar from "../components/Sidebar";
@@ -25,7 +25,7 @@ const HomePage = () => {
 
   const { data: recentChecks, isLoading: isRecentLoading, isError: isRecentError } = useGetRecentChecksQuery();
 
-  const [saveClaimResult] = useSaveClaimResultMutation(); // Hook for saving claim results
+  // COMMENTED OUT: const [saveClaimResult] = useSaveClaimResultMutation(); // Hook for saving claim results
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
@@ -72,8 +72,7 @@ const HomePage = () => {
         };
       }
 
-      // Use saveClaimResult mutation to save result data to the backend
-      await saveClaimResult(resultData).unwrap();  // Call the save mutation
+      // COMMENTED OUT: await saveClaimResult(resultData).unwrap();  // Call the save mutation
 
       navigate("/result", { state: resultData });
     } catch (error) {
