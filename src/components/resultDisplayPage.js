@@ -27,12 +27,12 @@ function ResultPage() {
   const { claim, confidence, explanation, sources, verdict } = result;
 
   const formattedClaim = claim || "Unknown claim";
-  const formattedConfidence = confidence ? `${confidence}%` : "0%";
+  const formattedConfidence = confidence && confidence !== "Unverified" ? `${confidence}%` : "Unverified";
   const formattedExplanation = explanation || "No explanation available.";
   const formattedSources = sources?.length
     ? sources.join(', ')
     : "No sources provided";
-  const formattedVerdict = verdict || "Unverifiable";
+  const formattedVerdict = verdict || "Unverified";
 
   const handleFeedback = (emoji) => {
     setFeedback(emoji);
