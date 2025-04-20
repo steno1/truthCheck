@@ -5,7 +5,7 @@ import {
   useCheckTextClaimMutation,
   useCheckImageClaimMutation,
   useGetRecentChecksQuery,
-  useSaveClaimResultMutation, // Import the save claim mutation
+  useSaveClaimResultMutation,
 } from "../api/checkApiSlice";
 import GlobalLoader from "../components/GlobalLoader";
 import Sidebar from "../components/Sidebar";
