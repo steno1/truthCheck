@@ -27,7 +27,7 @@ function ResultPage() {
   const { claim, confidence, explanation, sources, verdict } = result;
 
   const formattedClaim = claim || "Unknown claim";
-  const formattedConfidence = confidence && confidence !== "Unverified" ? `${confidence}%` : "Unverified";
+  const formattedConfidence = typeof confidence === 'number' ? `${confidence}%` : confidence || "Unverified";
   const formattedExplanation = explanation || "No explanation available.";
   const formattedSources = sources?.length
     ? sources.join(', ')
