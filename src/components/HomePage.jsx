@@ -35,15 +35,22 @@ const HomePage = () => {
       if (textClaim.trim()) {
         const response = await triggerCheckTextClaim(textClaim).unwrap();
         const claimsResult = response.claims?.[0] || null;
-
+        
         resultData = {
           claim: textClaim,
           confidence: 70,
-          explanation: claimsResult?.text || "No explanation found.",
+          explanation: claimsResult?.claimReview?.[0]?.text || 
+                       claimsResult?.claimReview?.[0]?.title || 
+                       "No explanation found.",
           sources: claimsResult?.claimReview?.map((review) => review.url) || ["No sources found"],
           verdict: claimsResult?.claimReview?.[0]?.textualRating || "Unverifiable",
         };
+        
       }
+
+
+   
+
 
       // If an image is selected, handle image verification
       if (imageClaim) {
