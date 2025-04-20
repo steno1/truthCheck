@@ -5,6 +5,7 @@ import {
   useCheckTextClaimMutation,
   useCheckImageClaimMutation,
   useGetRecentChecksQuery,
+  useSaveClaimResultMutation, // Import the save claim mutation
 } from "../api/checkApiSlice";
 import GlobalLoader from "../components/GlobalLoader";
 import Sidebar from "../components/Sidebar";
@@ -23,6 +24,8 @@ const HomePage = () => {
     useCheckImageClaimMutation();
 
   const { data: recentChecks, isLoading: isRecentLoading, isError: isRecentError } = useGetRecentChecksQuery();
+
+  const [saveClaimResult] = useSaveClaimResultMutation(); // Hook for saving claim results
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
@@ -69,12 +72,8 @@ const HomePage = () => {
         };
       }
 
-      // Save result to backend
-      await fetch("http://localhost:5000/api/recent-checks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(resultData),
-      });
+      // Use saveClaimResult mutation to save result data to the backend
+      await saveClaimResult(resultData).unwrap();  // Call the save mutation
 
       navigate("/result", { state: resultData });
     } catch (error) {
@@ -92,7 +91,7 @@ const HomePage = () => {
 
   // Function to shorten claim text to the first 30 words
   const getShortenedClaim = (claimText) => {
-    if (!claimText) return "No claim text available"; // Ensure the claimText is defined
+    if (!claimText) return "No claim text available"; 
     const words = claimText.split(' ');
     const first30Words = words.slice(0, 30).join(' ');
     return `${first30Words}... see result`;

@@ -36,11 +36,20 @@ export const checkApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
-  
+    // Get recent checks
     getRecentChecks: builder.query({
       query: () => ({
         url: '/api/check/recent',
         method: 'GET',
+      }),
+    }),
+
+    // Save the claim result to the backend
+    saveClaimResult: builder.mutation({
+      query: (resultData) => ({
+        url: '/api/check/save',  
+        method: 'POST',
+        body: resultData,  
       }),
     }),
   }),
@@ -49,5 +58,6 @@ export const checkApiSlice = apiSlice.injectEndpoints({
 export const {
   useCheckTextClaimMutation,
   useCheckImageClaimMutation,
-  useGetRecentChecksQuery, 
+  useGetRecentChecksQuery,
+  useSaveClaimResultMutation,  
 } = checkApiSlice;
