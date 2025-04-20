@@ -29,13 +29,25 @@ export const checkApiSlice = apiSlice.injectEndpoints({
         formData.append('image', imageFile);
 
         return {
-          url: '/api/check/image', 
+          url: '/api/check/image',
           method: 'POST',
           body: formData,
         };
       },
     }),
+
+  
+    getRecentChecks: builder.query({
+      query: () => ({
+        url: '/api/check/recent',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
-export const { useCheckTextClaimMutation, useCheckImageClaimMutation } = checkApiSlice;
+export const {
+  useCheckTextClaimMutation,
+  useCheckImageClaimMutation,
+  useGetRecentChecksQuery, 
+} = checkApiSlice;
