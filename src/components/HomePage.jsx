@@ -90,6 +90,14 @@ const HomePage = () => {
     }
   };
 
+  // Function to shorten claim text to the first 30 words
+  const getShortenedClaim = (claimText) => {
+    if (!claimText) return "No claim text available"; // Ensure the claimText is defined
+    const words = claimText.split(' ');
+    const first30Words = words.slice(0, 30).join(' ');
+    return `${first30Words}... see result`;
+  };
+
   return (
     <div className="home-container">
       <Sidebar
@@ -154,9 +162,8 @@ const HomePage = () => {
                     Claim:
                   </span>{" "}
                   <span style={{ color: "#777" }}>
-                    {/* Show truncated claim text */}
-                    {claim.claim?.split(" ").slice(0, 15).join(" ")}
-                    {claim.claim?.split(" ").length > 15 ? "..." : ""}
+                    {/* Display truncated claim text */}
+                    {getShortenedClaim(claim.claim)}
                   </span>
                   <span
                     className="see-results"
