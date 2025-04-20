@@ -36,10 +36,10 @@ const HomePage = () => {
         const response = await triggerCheckTextClaim(textClaim).unwrap();
         const claimsResult = response.claims?.[0] || null;
         console.log(claimsResult);
-        
+
         resultData = {
           claim: textClaim,
-          confidence: claimsResult?.claimReview?.[0]?.textualRating || 0,  // Set confidence dynamically
+          confidence: claimsResult?.claimReview?.[0]?.textualRating || 0,  
           explanation: claimsResult?.claimReview?.[0]?.text || 
                        claimsResult?.claimReview?.[0]?.title || 
                        claimsResult?.claimReview?.[0]?.textualRating || 
